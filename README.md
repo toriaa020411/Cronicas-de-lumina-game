@@ -1,218 +1,259 @@
-# Cronicas-de-lumina-game
-Jogo fisica
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Crônicas de Lúmina</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luz Lunar</title>
 <style>
-body {
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to bottom, #1a1a2e, #16213e);
-    color: white;
-    text-align:center;
-}
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        background: black;
+    }
 
-#game {
-    padding:20px;
-}
+    /* Tela Inicial */
+    #tela-inicial {
+        width: 100vw;
+        height: 100vh;
+        background: url('floresta_particulas.png') center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        position: relative;
+    }
 
-.scene {
-    min-height:200px;
-    padding:20px;
-    border-radius:15px;
-    background: rgba(255,255,255,0.05);
-    box-shadow: 0 0 20px rgba(255,255,255,0.1);
-    margin-bottom:20px;
-}
+    #tela-inicial h1 {
+        font-size: 5vw;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 10px #000;
+    }
 
-button {
-    padding:10px 20px;
-    margin:10px;
-    border:none;
-    border-radius:10px;
-    background: linear-gradient(45deg, #ff4e88, #6a5acd);
-    color:white;
-    font-size:16px;
-}
+    #btn-comecar {
+        padding: 15px 40px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        background-color: rgba(100, 50, 200, 0.8);
+        color: white;
+        transition: all 0.3s;
+    }
 
-button:hover {
-    opacity:0.8;
-}
+    #btn-comecar:hover {
+        background-color: rgba(150, 100, 250, 0.9);
+    }
 
-.stats {
-    display:flex;
-    justify-content:space-around;
-    margin-bottom:15px;
-}
+    /* Tela de Personalização */
+    #tela-personagem {
+        width: 100vw;
+        height: 100vh;
+        background: url('entrada_escola.png') center/cover no-repeat;
+        display: none;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 50px;
+        position: relative;
+    }
 
-.bar {
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
-    padding:5px;
-}
+    #customizacao {
+        width: 90%;
+        background: rgba(0,0,0,0.7);
+        padding: 20px;
+        border-radius: 15px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .categoria {
+        margin: 10px 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    select {
+        padding: 5px 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+    .miniaturas {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 5px;
+    }
+
+    .miniatura {
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        background-size: cover;
+    }
+
+    #btn-confirmar {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        background-color: purple;
+        color: white;
+        transition: 0.3s;
+    }
+
+    #btn-confirmar:hover {
+        background-color: darkviolet;
+    }
+
+    /* Partículas animadas */
+    .particula {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: flutuar linear infinite;
+    }
+
+    @keyframes flutuar {
+        0% { transform: translateY(0px); opacity:0.8; }
+        50% { opacity:0.3; }
+        100% { transform: translateY(-800px); opacity:0; }
+    }
 </style>
 </head>
-
 <body>
 
-<div id="game">
-
-<h1>🌙 Crônicas de Lúmina</h1>
-
-<div class="stats">
-<div class="bar">🔷 Lógica: <span id="math">0</span></div>
-<div class="bar">🔥 Alquimia: <span id="chem">0</span></div>
-<div class="bar">⚡ Leis: <span id="phys">0</span></div>
-<div class="bar">💘 Romance: <span id="love">0</span></div>
+<!-- Tela Inicial -->
+<div id="tela-inicial">
+    <h1>Luz Lunar</h1>
+    <button id="btn-comecar">Começar</button>
 </div>
 
-<div class="scene" id="sceneText"></div>
+<!-- Tela de Personalização -->
+<div id="tela-personagem">
+    <div id="customizacao">
+        <h2>Personalize sua protagonista</h2>
 
-<div id="choices"></div>
+        <div class="categoria">
+            <label>Roupas:</label>
+            <select id="roupaSelect">
+                <option>Uniforme Escolar</option>
+                <option>Vestido Mágico</option>
+                <option>Casual</option>
+            </select>
+            <div class="miniaturas" id="miniRoupas">
+                <div class="miniatura" style="background-color:blue;" onclick="selecionar('roupa','Uniforme Escolar')"></div>
+                <div class="miniatura" style="background-color:red;" onclick="selecionar('roupa','Vestido Mágico')"></div>
+                <div class="miniatura" style="background-color:green;" onclick="selecionar('roupa','Casual')"></div>
+            </div>
+        </div>
 
+        <div class="categoria">
+            <label>Penteado:</label>
+            <select id="penteadoSelect">
+                <option>Cabelo Longo</option>
+                <option>Cabelo Curto</option>
+                <option>Penteado Trançado</option>
+            </select>
+        </div>
+
+        <div class="categoria">
+            <label>Cor do cabelo:</label>
+            <select id="cabeloSelect">
+                <option>Castanho</option>
+                <option>Preto</option>
+                <option>Roxo</option>
+                <option>Azul</option>
+            </select>
+        </div>
+
+        <div class="categoria">
+            <label>Tons de pele:</label>
+            <select id="peleSelect">
+                <option>Claro</option>
+                <option>Moreno</option>
+                <option>Escuro</option>
+                <option>Rosa</option>
+                <option>Azul</option>
+            </select>
+        </div>
+
+        <div class="categoria">
+            <label>Olhos:</label>
+            <select id="olhosSelect">
+                <option>Azuis</option>
+                <option>Verdes</option>
+                <option>Heterocromia Azul + Roxo</option>
+                <option>Heterocromia Verde + Dourado</option>
+            </select>
+        </div>
+
+        <button id="btn-confirmar">Pronto</button>
+    </div>
 </div>
+
+<audio id="musica" loop>
+    <source src="trilha_instrumental.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-let stats = {
-math:0,
-chem:0,
-phys:0,
-love:0
-};
+    const btnComecar = document.getElementById('btn-comecar');
+    const telaInicial = document.getElementById('tela-inicial');
+    const telaPersonagem = document.getElementById('tela-personagem');
+    const musica = document.getElementById('musica');
 
-function updateStats(){
-document.getElementById("math").innerText = stats.math;
-document.getElementById("chem").innerText = stats.chem;
-document.getElementById("phys").innerText = stats.phys;
-document.getElementById("love").innerText = stats.love;
-localStorage.setItem("luminaSave", JSON.stringify(stats));
-}
+    const personagem = {};
 
-function loadGame(){
-let save = localStorage.getItem("luminaSave");
-if(save){
-stats = JSON.parse(save);
-updateStats();
-}
-}
+    // Partículas mágicas na tela inicial
+    for(let i=0;i<50;i++){
+        let p = document.createElement('div');
+        p.classList.add('particula');
+        p.style.left = Math.random()*window.innerWidth+'px';
+        p.style.top = Math.random()*window.innerHeight+'px';
+        p.style.animationDuration = (5 + Math.random()*5)+'s';
+        telaInicial.appendChild(p);
+    }
 
-function showScene(text, options){
-document.getElementById("sceneText").innerHTML = text;
-let choicesDiv = document.getElementById("choices");
-choicesDiv.innerHTML = "";
-options.forEach(option => {
-let btn = document.createElement("button");
-btn.innerText = option.text;
-btn.onclick = option.action;
-choicesDiv.appendChild(btn);
-});
-}
+    btnComecar.addEventListener('click', () => {
+        telaInicial.style.display = 'none';
+        telaPersonagem.style.display = 'flex';
+        musica.play();
+    });
 
-function startGame(){
-showScene(
-"🏰 Você chega à Academia Arcana de Lúmina.<br><br>Um jovem de olhar intenso observa você. Ele cruza os braços.<br><br>'Então… você é a nova Guardiã?'",
-[
-{text:"Responder confiante", action:()=>{
-stats.love +=1;
-updateStats();
-academyTest();
-}},
-{text:"Responder tímida", action:()=>{
-academyTest();
-}}
-]
-);
-}
+    // Função para selecionar miniatura
+    function selecionar(categoria, valor){
+        personagem[categoria] = valor;
+        console.log(personagem);
+    }
 
-function academyTest(){
-showScene(
-"📜 Primeira Prova: O Portal Matemático.<br><br>Se 3 cristais geram 15 unidades de energia, quantos cristais são necessários para gerar 30?",
-[
-{text:"5 cristais", action:wrong},
-{text:"6 cristais", action:correctMath},
-{text:"10 cristais", action:wrong}
-]
-);
-}
+    // Confirmar e salvar escolhas
+    document.getElementById('btn-confirmar').addEventListener('click', () => {
+        personagem['roupa'] = document.getElementById('roupaSelect').value;
+        personagem['penteado'] = document.getElementById('penteadoSelect').value;
+        personagem['cabelo'] = document.getElementById('cabeloSelect').value;
+        personagem['pele'] = document.getElementById('peleSelect').value;
+        personagem['olhos'] = document.getElementById('olhosSelect').value;
 
-function correctMath(){
-stats.math +=2;
-stats.love +=1;
-updateStats();
-showScene(
-"✨ Correto! Cada cristal gera 5 unidades.<br><br>Ele sorri levemente. 'Impressionante…'",
-[
-{text:"Continuar", action:alchemyTest}
-]
-);
-}
-
-function alchemyTest(){
-showScene(
-"🔥 Aula de Alquimia.<br><br>Você mistura dois elementos. Quando combinados, produzem calor e luz.<br><br>Isso é um exemplo de:",
-[
-{text:"Reação química", action:correctChem},
-{text:"Mudança física", action:wrong}
-]
-);
-}
-
-function correctChem(){
-stats.chem +=2;
-stats.love +=1;
-updateStats();
-showScene(
-"🌟 Correto! Uma nova substância foi formada.<br><br>Ele se aproxima: 'Você aprende rápido demais... perigoso.'",
-[
-{text:"Ir para a missão externa", action:physicsMission}
-]
-);
-}
-
-function physicsMission(){
-showScene(
-"🌌 Missão fora da Academia.<br><br>Uma ponte mágica está instável.<br><br>Se um objeto cai, a força que o puxa é:",
-[
-{text:"Magia invisível", action:wrong},
-{text:"Gravidade", action:correctPhys}
-]
-);
-}
-
-function correctPhys(){
-stats.phys +=2;
-stats.love +=2;
-updateStats();
-showScene(
-"⚡ Correto! A gravidade mantém tudo no lugar.<br><br>Ele segura sua mão para atravessar a ponte.<br><br>'Talvez você seja mesmo a escolhida.'",
-[
-{text:"Salvar e continuar", action:endGame}
-]
-);
-}
-
-function wrong(){
-showScene(
-"❌ Algo falhou. Mas tudo bem, aprender é parte da jornada.<br><br>Tente novamente.",
-[
-{text:"Tentar de novo", action:academyTest}
-]
-);
-}
-
-function endGame(){
-showScene(
-"🌙 Fim do Capítulo 1.<br><br>Você evoluiu como Guardiã.<br><br>Seu vínculo com ele cresce lentamente...<br><br>Continua...",
-[
-{text:"Recomeçar", action:startGame}
-]
-);
-}
-
-loadGame();
-startGame();
+        // Salva no localStorage para continuar no jogo
+        localStorage.setItem('protagonista', JSON.stringify(personagem));
+        alert("Personagem salva! Vamos para a aventura!");
+        // Aqui você pode redirecionar para Capítulo 1
+    });
 </script>
 
 </body>
