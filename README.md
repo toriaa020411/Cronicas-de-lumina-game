@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luz Lunar</title>
+<title>Luz Lunar - Personalização</title>
 <style>
     body, html {
         margin: 0;
         padding: 0;
         font-family: 'Arial', sans-serif;
         overflow: hidden;
-        background: black;
     }
 
     /* Tela Inicial */
@@ -28,7 +27,7 @@
     }
 
     #tela-inicial h1 {
-        font-size: 5vw;
+        font-size: 6vw;
         margin-bottom: 20px;
         text-shadow: 2px 2px 10px #000;
     }
@@ -57,10 +56,22 @@
         flex-direction: column;
         justify-content: flex-end;
         align-items: center;
-        padding-bottom: 50px;
+        padding-bottom: 30px;
         position: relative;
     }
 
+    /* Protagonista central */
+    #personagem-preview {
+        width: 300px;
+        height: 500px;
+        background: url('protagonista_base.png') center/contain no-repeat;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50px;
+    }
+
+    /* Interface de customização */
     #customizacao {
         width: 90%;
         background: rgba(0,0,0,0.7);
@@ -70,6 +81,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        z-index: 10;
     }
 
     .categoria {
@@ -146,6 +158,7 @@
 
 <!-- Tela de Personalização -->
 <div id="tela-personagem">
+    <div id="personagem-preview"></div>
     <div id="customizacao">
         <h2>Personalize sua protagonista</h2>
 
@@ -156,11 +169,6 @@
                 <option>Vestido Mágico</option>
                 <option>Casual</option>
             </select>
-            <div class="miniaturas" id="miniRoupas">
-                <div class="miniatura" style="background-color:blue;" onclick="selecionar('roupa','Uniforme Escolar')"></div>
-                <div class="miniatura" style="background-color:red;" onclick="selecionar('roupa','Vestido Mágico')"></div>
-                <div class="miniatura" style="background-color:green;" onclick="selecionar('roupa','Casual')"></div>
-            </div>
         </div>
 
         <div class="categoria">
@@ -216,6 +224,7 @@
     const telaInicial = document.getElementById('tela-inicial');
     const telaPersonagem = document.getElementById('tela-personagem');
     const musica = document.getElementById('musica');
+    const preview = document.getElementById('personagem-preview');
 
     const personagem = {};
 
@@ -235,13 +244,11 @@
         musica.play();
     });
 
-    // Função para selecionar miniatura
-    function selecionar(categoria, valor){
-        personagem[categoria] = valor;
-        console.log(personagem);
+    function atualizarPreview(){
+        // Aqui você pode mudar o background do preview com base nas escolhas
+        preview.style.background = `url('protagonista_${personagem.roupa||'base'}.png') center/contain no-repeat`;
     }
 
-    // Confirmar e salvar escolhas
     document.getElementById('btn-confirmar').addEventListener('click', () => {
         personagem['roupa'] = document.getElementById('roupaSelect').value;
         personagem['penteado'] = document.getElementById('penteadoSelect').value;
@@ -249,11 +256,21 @@
         personagem['pele'] = document.getElementById('peleSelect').value;
         personagem['olhos'] = document.getElementById('olhosSelect').value;
 
-        // Salva no localStorage para continuar no jogo
+        // Salva no localStorage
         localStorage.setItem('protagonista', JSON.stringify(personagem));
-        alert("Personagem salva! Vamos para a aventura!");
+
+        alert("Personagem salva! Pronta para a aventura!");
         // Aqui você pode redirecionar para Capítulo 1
     });
+
+    // Atualiza preview a cada mudança
+    ['roupaSelect','penteadoSelect','cabeloSelect','peleSelect','olhosSelect'].forEach(id => {
+        document.getElementById(id).addEventListener('change', ()=>{
+            personagem[id.replace('Select','').toLowerCase()] = document.getElementById(id).value;
+            atualizarPreview();
+        });
+    });
+
 </script>
 
 </body>
